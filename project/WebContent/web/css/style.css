@@ -1,0 +1,44 @@
+body{
+	
+	background-color: #DBDBDB;
+	
+}
+
+.noselect {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* NAVBAR */
+
+#_loginForm li{
+	padding: 2px;
+}
+
+/*FOOTER*/
+
+footer{
+	padding: 20px;
+	background-color: #101010;
+	border-top: 4px outset #080808;
+}
+
+footer hr{
+	border-color: #32303A;
+}
+
+footer ul{
+	list-style: none;
+}
+
+.errorMessage{
+	color: red;	
+}
+
+.wwFormTable{
+	width: 100%;
+}

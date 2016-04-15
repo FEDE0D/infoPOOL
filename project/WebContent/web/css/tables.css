@@ -1,0 +1,5 @@
+.tableContent{
+	max-height: 400px;
+	overflow: scroll auto;
+	overflow-x:hidden;
+}

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 	FALTA : completar los beans para actions -->
+<!-- 	FALTA : Spring JPA | entityManager en GenericDAOHib (y otras) se setee con spring-->
+
+<beans	xmlns="http://www.springframework.org/schema/beans"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:context="http://www.springframework.org/schema/context"
+		xmlns:tx="http://www.springframework.org/schema/tx"
+		xmlns:jee="http://www.springframework.org/schema/jee"
+		xmlns:aop="http://www.springframework.org/schema/aop"
+		xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		                      http://www.springframework.org/schema/beans/spring-beans.xsd
+		                      http://www.springframework.org/schema/context 
+		                      http://www.springframework.org/schema/context/spring-context.xsd
+		                      http://www.springframework.org/schema/mvc
+		                      http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		                      http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd"
+		default-autowire="byType">
+		
+	<aop:aspectj-autoproxy proxy-target-class="true"/>
+
+<!-- BEANS JPA-HIB -->
+
+	<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"/>
+		</property>
+	</bean>
+	<bean id="txManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
+	</bean>
+	
+	<!-- 	<tx:annotation-driven /> -->
+	<!-- 	<context:annotation-config/> -->
+	<!-- 	<context:component-scan base-package="com.tp" /> -->
+	<!-- 	<tx:annotation-driven transaction-manager="txManager" /> -->
+	
+<!-- 	BEANS PARA ACTIONS -->
+
+	<bean id="usuarioDAO" class="com.tp.daos.hib.UsuarioDAOHib" scope="prototype" />
+	<bean id="recorridoDAO" class="com.tp.daos.hib.RecorridoDAOHib" scope="prototype" />
+	<bean id="denunciaDAO" class="com.tp.daos.hib.DenunciaDAOHib" scope="prototype" />
+	<bean id="eventoDAO" class="com.tp.daos.hib.EventoDAOHib" scope="prototype" />
+	<bean id="propuestaDAO" class="com.tp.daos.hib.PropuestaDAOHib" scope="prototype" />
+	
+	<bean id="loginAction" class="com.tp.actions.LoginAction" scope="prototype">
+		<property name="usuarioDAO" ref="usuarioDAO"/>
+	</bean>
+	
+	<bean id="denunciaRecorridoAction" class="com.tp.actions.DenunciaRecorridoAction" scope="prototype">
+		<property name="recorridoDAO" ref="recorridoDAO" />
+		<property name="denunciaDAO" ref="denunciaDAO"/>
+	</bean>
+	
+	<bean id="eventoAction" class="com.tp.actions.EventoAction" scope="prototype">
+		<property name="eventoDAO" ref="eventoDAO" />
+	</bean>
+	
+	<bean id="eventoDetalleAction" class="com.tp.actions.EventoDetalleAction" scope="prototype">
+		<property name="eventoDAO" ref="eventoDAO" />
+	</bean>
+	
+	<bean id="propuestaAction" class="com.tp.actions.PropuestaAction" scope="prototype">
+		<property name="propuestaDAO" ref="propuestaDAO" />
+	</bean>
+	
+	<bean id="recorridoAction" class="com.tp.actions.RecorridoAction" scope="prototype">
+		<property name="recorridoDAO" ref="recorridoDAO" />
+	</bean>
+	
+	<bean id="registerAction" class="com.tp.actions.RegisterAction" scope="prototype">
+		<property name="usuarioDAO" ref="usuarioDAO" />
+	</bean>
+	
+<!-- 	BEANS MAIL -->
+	<bean id="applicationContextProvider" class="com.tp.util.ApplicationContextProvider"></bean>
+
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="smtp.gmail.com" />
+		<property name="port" value="587" />
+		<property name="username" value="java.tp.7.mail@gmail.com" />
+		<property name="password" value="pcmasterrace" />
+	 
+		<property name="javaMailProperties">
+		   <props>
+	       	      <prop key="mail.smtp.auth">true</prop>
+	       	      <prop key="mail.smtp.starttls.enable">true</prop>
+	       	   </props>
+		</property>
+	</bean>
+	 
+	<bean id="Mail" class="com.tp.util.Mail" >
+		<property name="mailSender" ref="mailSender" />
+	</bean>
+	
+<!-- 	CONFIG ASPECTOS -->
+	<bean id="mailAspect" class="com.tp.aspects.MailAspect" />
+	<aop:config>
+		<aop:aspect id="aspectDenunciaNotification" ref="mailAspect" >
+		
+		<aop:pointcut id="pointCutDenunciaNotification" expression="execution(String com.tp.actions.DenunciaRecorridoAction.denunciar(..))" />
+		<aop:after method="sendNotificationToAdmin" pointcut-ref="pointCutDenunciaNotification" />
+		</aop:aspect>
+	</aop:config>
+
+</beans>

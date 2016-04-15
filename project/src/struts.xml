@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN" "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	
+	<constant name="struts.custom.i18n.resources" value="com.tp.util.i18n.global" />
+	
+	<package name="app" extends="struts-default">
+	
+		<action name="Index">
+			<result>/views/index.jsp</result>
+		</action>
+	
+		<action name="Signup">
+			<result name="success">/views/signup.jsp</result>
+		</action>
+		
+		<action name="Register" class="com.tp.actions.RegisterAction">
+			<result name="success">/views/index.jsp</result>
+			<result name="input">/views/signup.jsp</result>
+		</action>
+		
+		<action name="Login" class="loginAction" method="login">
+			<result name="success" type="redirect">Index.action</result>
+			<result name="error" type="redirect">Index.action</result>
+			<result name="input" type="redirect">Index.action</result>
+		</action>
+		
+		<action name="Logout" class="com.tp.actions.LoginAction" method="logout">
+			<result type="redirect">Index.action</result>
+		</action>
+		
+		<action name="vEvento_Alta">
+			<result name="success" >/views/evento_alta.jsp</result>
+		</action>
+		
+		<action name="vEvento_Modificacion" class="com.tp.actions.EventoAction">
+			<result name="success">/views/evento_modificacion.jsp</result>
+			<result name="error" type="redirect">Index.action</result>
+		</action>
+		
+		<action name="aEvento_Alta" class="com.tp.actions.EventoAction" method="alta">
+			<result name="success" type="redirectAction">
+				<param name="actionName">vEvento_Detalle</param>
+				<param name="eventoId">${eventoId}</param>
+			</result>
+			<result name="input">/views/evento_alta.jsp</result>
+			<result name="error" type="redirect">Index.action</result>
+		</action>
+		
+		<action name="aEvento_Modificacion" class="com.tp.actions.EventoAction" method="modificacion">
+			<result name="success" type="redirectAction">
+				<param name="actionName">vEvento_Detalle</param>
+				<param name="eventoId">${eventoId}</param>
+			</result>
+			<result name="input">/views/evento_modificacion.jsp</result>
+			<result name="error" type="redirect">Index.action</result>
+		</action>
+		
+		<action name="vEvento_Listado" class="com.tp.actions.EventoAction" method="listado">
+			<result name="success">/views/evento_listado.jsp</result>
+		</action>
+		
+		<action name="vEvento_Detalle" class="com.tp.actions.EventoDetalleAction">
+			<result name="success">/views/evento_detalle.jsp</result>
+			<result name="error" type="redirect">Index.action</result>
+		</action>
+		
+<!-- 		RECORRIDOS -->
+
+		<action name="vRecorrido_Alta" class="com.tp.actions.RecorridoAction" method="nuevo">
+			<result name="success">/views/recorrido_alta.jsp</result>
+		</action>
+		
+		<action name="aRecorrido_Alta" class="com.tp.actions.RecorridoAction" method="alta">
+			<result name="success" type="redirectAction">
+				<param name="actionName">vRecorrido_Detalle</param>
+				<param name="id">${recorridoId}</param>
+			</result>
+			<result name="input" type="redirect">Index.action</result>
+		</action>
+		
+		<action name="vRecorrido_Detalle" class="com.tp.actions.RecorridoAction" method="detalle">
+			<result name="success">/views/recorrido_detalle.jsp</result>
+			<result name="error" type="redirect">Index.action</result>
+		</action>
+		
+		<action name="vRecorrido_Listado" class="com.tp.actions.RecorridoAction" method="listado">
+			<result name="success">/views/recorrido_listado.jsp</result>
+			<result name="error" type="redirect">Index.action</result>
+		</action>
+		
+		<action name="aRecorrido_Voto" class="com.tp.actions.RecorridoAction" method="votar">
+			<result type="stream">
+			    <param name="contentType">text</param>
+			    <param name="inputName">votoStream</param>
+			</result>
+		</action>
+
+<!-- 		PERFIL -->
+		<action name="vPerfil" class="com.tp.actions.PerfilAction" method="ver">
+			<result name="success">/views/profile.jsp</result>
+			<result name="error" type="redirect">Index.action</result>
+			<result name="input" type="redirect">Index.action</result>
+		</action>
+
+<!-- 	DENUNCIAS -->
+
+		<action	name="aDenuncia_Alta" class="com.tp.actions.DenunciaRecorridoAction" method="denunciar">
+			<result name="success" type="redirect">vRecorrido_Listado.action</result>
+			<result name="error" type="redirect">Index.action</result>
+		</action>
+
+		
+<!-- 		PROPUESTAS -->
+		
+		<action name="aPropuesta_Alta" class="com.tp.actions.PropuestaAction" method="alta">
+			<result name="success" type="redirectAction">
+				<param name="actionName">vRecorrido_Detalle</param>
+				<param name="id">${recorrido.id}</param>
+			</result>
+		</action>
+		
+		<action name="aPropuesta_Aceptar" class="com.tp.actions.PropuestaAction" method="aceptar">
+			<result name="success" type="redirect">Index.action</result>
+		</action>
+		
+		<action name="aPropuesta_Cancelar" class="com.tp.actions.PropuestaAction" method="cancelar">
+			<result name="success" type="redirect">Index.action</result>
+		</action>
+		
+<!-- 		ADMINISTRACION -->
+		<action name="vUserManager" class="com.tp.actions.UserManager" method="vUserManager">
+			<result>/views/user_manager.jsp</result>
+			<result name="input" type="redirect">Index.action</result>
+		</action>
+		
+		<action name="aUserManagerDelete" class="com.tp.actions.UserManager" method="aUserManagerDelete">
+			<result type="redirect">vUserManager.action</result>
+		</action>
+		
+<!-- 		MENSAJES -->
+		<action name="aMensaje_Alta" class="com.tp.actions.MensajeAction" method="alta">
+			<result name="success" type="redirectAction">
+				<param name="actionName">vPerfil</param>
+				<param name="uid">${receptor}</param>
+			</result>
+			<result name="error" type="redirect">
+				<param name="actionName">vPerfil</param>
+				<param name="uid">${receptor}</param>
+			</result>
+		</action>
+		
+		<action name="MensajesVistos" class="com.tp.actions.MensajeAction" method="vistos">
+		</action>
+		
+	</package>
+</struts>
